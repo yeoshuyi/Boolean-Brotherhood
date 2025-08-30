@@ -4,6 +4,8 @@ This project is the **Boolean Brotherhood’s** solution to TikTok TechJam 2025,
 It leverages machine learning and neural network models, combined with Google Maps API to analyze and classify reviews.  
 
 **Setup**
+
+  
 Boolean Brothers V1 and V2
 1) Enter GMaps API keys into .env file
 2) Run app.py
@@ -13,7 +15,9 @@ Trainer
 1) Unzip my_predictions_on_wah.csv into the same file as NNtik.py or spam.py
 2) Run NNtik.py for Neural Network or spam.py for Machine Learning Training
 
-**Files**
+**Files**  
+
+  
 The repository contains three main components:  
 - **Boolean Brothers V2** — Neural network–based review analyzer (current version).  
 - **Boolean Brothers V1** — Machine learning–based review analyzer (earlier version).  
@@ -42,6 +46,8 @@ Trainer
 - my_predictions_on_wah.csv zipped (Training Data)
 
 **Dependencies**
+
+  
 API Used:
 - googlemaps
 
@@ -61,5 +67,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-**License**
+**License**  
+
+  
 Distributed under the Unlicense License. See LICENSE.txt for more information.
