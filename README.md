@@ -54,6 +54,7 @@ numpy
 torch
 flask
 pandas
+joblib
 
 Install dependencies:
 ```bash
