@@ -37,24 +37,24 @@ Boolean Brothers V1
 - templates - HTML Files
 
 Trainer
-NNtik.py - Neural Network (V2 Trainer)
-spam.py - Machine Learning (V1 Trainer)
-my_predictions_on_wah.csv zipped (Training Data)
+- NNtik.py - Neural Network (V2 Trainer)
+- spam.py - Machine Learning (V1 Trainer)
+- my_predictions_on_wah.csv zipped (Training Data)
 
 **Dependencies**
 API Used:
-googlemaps
+- googlemaps
 
 Libraries Used:
-googlemaps
-dotenv
-sklearn
-sentence_transformers
-numpy
-torch
-flask
-pandas
-joblib
+- googlemaps
+- dotenv
+- sklearn
+- sentence_transformers
+- numpy
+- torch
+- flask
+- pandas
+- joblib
 
 Install dependencies:
 ```bash
