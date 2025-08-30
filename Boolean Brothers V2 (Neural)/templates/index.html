@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Boolean Brotherhood's Location Reviewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --tt-black:#0f0f0f;
+      --tt-ink:#ffffff;
+      --tt-muted:#bfbfbf;
+      --tt-teal:#69C9D0;
+      --tt-pink:#EE1D52;
+      --panel:#141414;
+      --line:#262626;
+      --shadow-1: 0 10px 30px rgba(0,0,0,.35);
+      --radius-outer: 18px;
+      --radius-inner: 14px;
+      --rail-w: clamp(140px, 14vw, 260px);
+      --content-w: min(1100px, 88vw);
+    }
+
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      color: var(--tt-ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+      background: var(--tt-black);
+      min-height: 100vh;
+      min-height: 100svh;
+      min-height: 100dvh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(1200px 1200px at 20% -10%, rgba(105,201,208,.16), transparent 40%),
+        radial-gradient(1200px 1200px at 80% 110%, rgba(238,29,82,.16), transparent 40%),
+        var(--tt-black);
+      background-attachment: fixed;
+      will-change: background-position;
+      pointer-events: none;
+    }
+
+    .rail{ position: fixed; inset: 0 auto 0 0; width: var(--rail-w); pointer-events: none; z-index: 0;
+      background: linear-gradient(180deg, rgba(105,201,208,.08), transparent 30%, transparent 70%, rgba(238,29,82,.08));
+      border-right: 1px solid #1f1f1f;
+    }
+    .rail--right{ left:auto; right:0; border-right:none; border-left:1px solid #1f1f1f; }
+    .rail__canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:auto; }
+
+    .page{ position:relative; z-index:1; width: var(--content-w); margin: 0 auto; padding: 30px 0 96px; display:grid; gap: 20px; }
+
+    .hero{ display:grid; gap: 12px; background: linear-gradient(180deg, #141414, #0f0f0f);
+      border: 1px solid var(--line); border-radius: var(--radius-outer); box-shadow: var(--shadow-1); padding: 28px; }
+    .kicker{ display:inline-flex; gap:10px; align-items:center; font-size:12px; }
+    .kicker i{ width:10px; height:10px; border-radius:50%; background:var(--tt-teal); }
+
+    h1{ margin:0; font-size: 2rem;
+      background: linear-gradient(90deg, var(--tt-teal), var(--tt-pink));
+      -webkit-background-clip:text; -webkit-text-fill-color: transparent; }
+    .sub{ color: var(--tt-muted); }
+
+    .card{ background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-outer); box-shadow: var(--shadow-1); }
+    .card-head{ padding:18px 22px; border-bottom:1px solid var(--line); background:#171717; }
+    .card-title{ font-weight:800; }
+    .card-sub{ color: var(--tt-muted); font-size:.95rem; }
+
+    .form-wrap{ padding: 18px 22px 22px; display:flex; justify-content:center; }
+    form{ display:flex; flex-direction:column; gap:14px; align-items:center; width:100%; }
+    input[type="text"]{
+      padding:12px; border-radius:12px; background:#0d0d0d; color:#fff; border:1px solid #2a2a2a;
+      width:80%; max-width:400px; text-align:center;
+    }
+    input[type="submit"]{
+      padding:12px 18px; border-radius:12px; background:linear-gradient(90deg,var(--tt-teal),var(--tt-pink));
+      font-weight:900; cursor:pointer; width:50%; max-width:200px; text-align:center;
+    }
+
+    .reviews-head{ display:flex; justify-content:space-between; padding:14px 18px; background:#121212; border-bottom:1px solid var(--line); position:sticky; top:0; }
+    .loc{ font-weight:900; background:linear-gradient(90deg,var(--tt-teal),var(--tt-pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+    @keyframes neonPulse {
+      0%{ text-shadow: 0 0 4px var(--tt-teal), 0 0 6px var(--tt-pink); }
+      50%{ text-shadow: 0 0 16px var(--tt-teal), 0 0 20px var(--tt-pink); }
+      100%{ text-shadow: 0 0 4px var(--tt-teal), 0 0 6px var(--tt-pink); }
+    }
+    .pulse{ animation: neonPulse 1.8s ease-out; }
+
+    .rev{ background:#131313; margin:10px; padding:12px; border-radius:14px; }
+    .rev q{ font-style:italic; }
+
+    .meta{ display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+    .badge{ display:inline-flex; align-items:center; padding:6px 12px; border-radius:999px; font-size:.85rem; font-weight:500; }
+    .badge--orig{ border:1px solid var(--tt-teal); color:var(--tt-teal); background:rgba(105,201,208,.08); }
+    .badge--adj{ border:1px solid #a04679; color:#a04679; background:rgba(238,29,82,.08); }
+    .badge--cls{ border:1px solid #b5b74a; color:#b5b74a; background:rgba(255,255,255,.08); }
+    .badge--cls2{ border:1px solid rgb(189, 58, 58); color:rgb(189, 58, 58); background:rgba(255,255,255,.08); }
+  </style>
+</head>
+<body>
+  <aside class="rail"><canvas id="railLeft" class="rail__canvas"></canvas></aside>
+  <aside class="rail rail--right"><canvas id="railRight" class="rail__canvas"></canvas></aside>
+
+  <main class="page">
+    <section class="hero">
+      <span class="kicker"><i></i> Boolean Brotherhood</span>
+      <h1>Location Review Analyser</h1>
+      <p class="sub">Display reviews for any location!</p>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <div class="card-title">Search</div>
+        <div class="card-sub">Type a place to pull the latest reviews.</div>
+      </div>
+      <div class="form-wrap">
+        <form action="/submit" method="post">
+          <input id="loc" type="text" name="location" placeholder="Enter location" />
+          <input type="submit" value="Submit" />
+          <script>
+    document.getElementById("searchForm").addEventListener("submit", function (e) {
+        const locField = document.getElementById("loc");
+        if (!locField.value.trim()) {
+        e.preventDefault();
+        locField.focus();
+        }
+    });
+    </script>
+        </form>
+      </div>
+    </section>
+
+    {% if review %}
+    <section class="card">
+      <div class="reviews-head">
+        <div class="loc pulse">Reviews for {{ review[0] }}</div>
+        <div class="pill">Average Ratings: {{ review[1] }}⭐</div>
+      </div>
+      <div class="reviews-body">
+        {% for r in review[2] %}
+        <article class="rev">
+          <q>{{ r["trunctext"] }}</q>
+          <div class="meta">
+            <span class="badge badge--orig">Original: {{ r['rating'] }}⭐</span>
+            <span class="badge badge--adj">Adjusted: {{ r['adjusted_rating'] }}⭐</span>
+            {% if r['classification']  == "Irrelevant" %}
+            <span class="badge badge--cls2">{{ r['classification'] }}</span>
+            {% else %}
+            <span class="badge badge--cls">{{ r['classification'] }}</span>
+            {% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script>
+    (function(){
+      const body = document.body;
+      window.addEventListener('scroll', ()=>{
+        const y = window.scrollY || window.pageYOffset;
+        body.style.setProperty('--grad-shift', y * 0.2 + 'px');
+        body.style.setProperty('--grad-shift-neg', -y * 0.15 + 'px');
+        body.style.setProperty('--grad-shift-pos', y * 0.1 + 'px');
+        body.style.setProperty('--grad-shift-big', y * 0.25 + 'px');
+        body.style.setProperty('--grad-shift-small', -y * 0.05 + 'px');
+        body.style.setProperty('--bg-offset', `${y*0.2}px ${y*0.1}px`);
+        body.style.setProperty('--bg-offset2', `${-y*0.15}px ${y*0.25}px`);
+        body.style.setProperty('--bg-offset3', `0px ${y*0.1}px`);
+        body.style.setProperty('--bg-offset4', `0px ${-y*0.05}px`);
+        document.body.style.setProperty('--scroll-y', y);
+        document.body.style.setProperty('--parallax', `${y*0.15}px`);
+        document.body.style.setProperty('--parallax-neg', `${-y*0.1}px`);
+        document.body.style.setProperty('--bg-y', (y * 0.15) + 'px');
+        document.body.style.setProperty('--bg-x', (y * 0.1) + 'px');
+        body.style.setProperty('--bg-pos', `center ${y*0.15}px`);
+        document.body.style.setProperty('--parallax-shift', `${y*0.1}px`);
+        document.body.style.setProperty('--gradient-pos', `center ${y*0.15}px`);
+        body.style.setProperty('--gradient-position', `center ${y*0.2}px`);
+        body.style.setProperty('--gradient-pos', `center ${y*0.15}px`);
+        document.body.style.setProperty('--gradient-shift', `0 ${y*0.15}px`);
+        body.style.setProperty('--bg-shift', `0 ${y*0.2}px`);
+        body.style.setProperty('--bg-shift2', `0 ${-y*0.15}px`);
+        document.body.style.setProperty('--gradient-y', (y*0.2)+'px');
+        body.style.setProperty('--grad-scroll', `${y*0.15}px`);
+        body.style.setProperty('--grad-scroll-neg', `${-y*0.15}px`);
+        body.style.setProperty('--grad-translate', `translateY(${y*0.1}px)`);
+        body.style.setProperty('--grad-translate2', `translateY(${y*0.2}px)`);
+        document.body.style.setProperty('--grad-scroll-pos', y*0.1+'px');
+        body.style.setProperty('--grad-pos', `0 ${y*0.2}px`);
+        body.style.setProperty('--grad-pos2', `0 ${y*0.1}px`);
+        document.body.style.setProperty('--bg-shift-final', `0 ${y*0.1}px`);
+        body.style.setProperty('--gradient-pos-final', `0 ${y*0.15}px`);
+        body.style.setProperty('--parallax-bg', `center ${y*0.1}px`);
+        body.style.setProperty('--bg-final', `center ${y*0.15}px`);
+        document.body.style.setProperty('--grad-final', `center ${y*0.15}px`);
+        document.body.style.setProperty('--bg-position', `center ${y*0.2}px`);
+        body.style.setProperty('--grad-position', `center ${y*0.15}px`);
+        document.body.style.setProperty('--gradient-scroll', `0 ${y*0.2}px`);
+        body.style.setProperty('--bg-move', `center ${y*0.15}px`);
+        document.body.style.setProperty('--grad-y', y*0.15+'px');
+        body.style.setProperty('--bg-parallax', `center ${y*0.2}px`);
+        body.style.setProperty('background-position', `center ${y*0.15}px`);
+      }, { passive:true });
+    })();
+    </script>
+    <script>
+  function makeRail(canvas, side='left'){
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+    camera.position.set(side==='left' ? 2.4 : -2.4, 0.4, 4.6);
+    camera.lookAt(0,0,0);
+
+    scene.add(new THREE.AmbientLight(0xffffff, .35));
+    const key = new THREE.DirectionalLight(0xffffff,.9);
+    key.position.set(side==='left'?-4:4,6,4);
+    scene.add(key);
+
+    const matTeal = new THREE.MeshStandardMaterial({ color:0x69C9D0, emissive:0x0a3d42, emissiveIntensity:.2, metalness:.6, roughness:.35 });
+    const matPink = new THREE.MeshStandardMaterial({ color:0xEE1D52, emissive:0x3a0a17, emissiveIntensity:.22, metalness:.6, roughness:.34 });
+    const matDark = new THREE.MeshStandardMaterial({ color:0x1a1a1a, metalness:.35, roughness:.6 });
+
+    const root = new THREE.Group();
+    scene.add(root);
+
+    const torus = new THREE.Mesh(new THREE.TorusGeometry(1.1,0.26,28,180), matTeal);
+    const knot  = new THREE.Mesh(new THREE.TorusKnotGeometry(0.9,0.18,180,24), matPink);
+    const ico   = new THREE.Mesh(new THREE.IcosahedronGeometry(0.86,0), matDark);
+
+    torus.position.set(side==='left'?-1.2:1.2, 0.25, -0.15);
+    knot.position.set(side==='left'?-0.1:0.1, -0.8, 0.25);
+    ico.position.set(side==='left'?-0.65:0.65, 0.95, -0.35);
+
+    root.add(torus, knot, ico);
+
+    for(let i=0;i<14;i++){
+      const plate = new THREE.Mesh(
+        new THREE.BoxGeometry(0.04,0.04,0.7),
+        new THREE.MeshStandardMaterial({ color: (i%2? 0x69C9D0 : 0xEE1D52), metalness:.35, roughness:.85 })
+      );
+      const r = 3.6 + Math.random()*0.8;
+      const a = Math.random()*Math.PI*2;
+      plate.position.set(
+        Math.cos(a)*r * (side==='left'?-1:1),
+        (Math.random()*2-1)*1.6,
+        -0.9 + Math.random()*1.4
+      );
+      plate.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+      root.add(plate);
+    }
+
+    const target = { rx: 0, ry: 0, cx: camera.position.x, cy: camera.position.y };
+    let hovering = false;
+
+    function onPointerMove(e){
+      const rect = canvas.getBoundingClientRect();
+      const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;   // -1..1
+      const ny = ((e.clientY - rect.top)  / rect.height) * 2 - 1;  // -1..1
+
+      target.ry = nx * 0.35;     
+      target.rx = -ny * 0.25;     
+
+      target.cx = (side==='left' ? 2.4 : -2.4) + nx * (side==='left' ? -0.35 : 0.35);
+      target.cy = 0.4 + (-ny) * 0.25;
+
+      hovering = true;
+    }
+
+    function onPointerLeave(){
+      hovering = false;
+      target.rx = 0;
+      target.ry = 0;
+      target.cx = (side==='left' ? 2.4 : -2.4);
+      target.cy = 0.4;
+    }
+
+    canvas.addEventListener('pointermove', onPointerMove, { passive:true });
+    canvas.addEventListener('pointerleave', onPointerLeave, { passive:true });
+
+    function resize(){
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+      camera.aspect = Math.max(1e-6, canvas.clientWidth / Math.max(1, canvas.clientHeight));
+      camera.updateProjectionMatrix();
+    }
+    resize(); addEventListener('resize', resize);
+
+    let scrollProgress = 0;
+    function onScroll(){
+      const max = document.body.scrollHeight - innerHeight || 1;
+      scrollProgress = scrollY / max;
+    }
+    addEventListener('scroll', onScroll, { passive:true }); onScroll();
+
+    const clock = new THREE.Clock();
+    (function tick(){
+      const t = clock.getElapsedTime();
+
+      root.rotation.x += (target.rx - root.rotation.x) * 0.08;
+      root.rotation.y += (target.ry - root.rotation.y) * 0.08;
+
+      root.rotation.z = (side==='left' ? 1 : -1) * scrollProgress * 0.45;
+
+      camera.position.x += (target.cx - camera.position.x) * 0.06;
+      camera.position.y += (target.cy - camera.position.y) * 0.06;
+      camera.lookAt(0,0,0);
+
+      const idle = hovering ? 0.2 : 1.0;
+      torus.rotation.y += 0.004 * idle + scrollProgress*0.002;
+      knot.rotation.x  -= 0.003 * idle + scrollProgress*0.0025;
+      ico.rotation.z   += 0.002 * idle + scrollProgress*0.002;
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    })();
+  }
+
+  makeRail(document.getElementById('railLeft'),'left');
+  makeRail(document.getElementById('railRight'),'right');
+</script>
+</body>
+</html>
