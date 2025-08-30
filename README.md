@@ -10,6 +10,8 @@ Boolean Brothers V1 and V2
 3) Access application through http://127.0.0.1:5000/
 
 Trainer
+1) Unzip my_predictions_on_wah.csv into the same file as NNtik.py or spam.py
+2) Run NNtik.py for Neural Network or spam.py for Machine Learning Training
 
 **Files**
 The repository contains three main components:  
@@ -37,6 +39,7 @@ templates - HTML Files
 Trainer
 NNtik.py - Neural Network (V2 Trainer)
 spam.py - Machine Learning (V1 Trainer)
+my_predictions_on_wah.csv zipped (Training Data)
 
 **Dependencies**
 API Used:
