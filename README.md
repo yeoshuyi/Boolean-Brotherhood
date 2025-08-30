@@ -20,21 +20,21 @@ The repository contains three main components:
 - **Trainer** — Training scripts for both V1 (ML) and V2 (Neural Network).  
 
 Boolean Brothers V2
-.env - Contains GMaps API Key
-3Big_D_weights.pth - Neural Network Weights
-app.py - Flask App Launcher
-main.py - Main Functions
-UIAI.py - Neural Network Implementation
-templates - HTML Files
+- .env - Contains GMaps API Key
+- 3Big_D_weights.pth - Neural Network Weights
+- app.py - Flask App Launcher
+- main.py - Main Functions
+- UIAI.py - Neural Network Implementation
+- templates - HTML Files
 
 Boolean Brothers V1
-.env - Contains GMaps API Key
-Big_D.pkl - Machine Learning Files
-pca_bigD.pkl - Machine Learning Files
-app.py - Flask App Launcher
-main.py - Main Functions
-uiaitwo.py - Machine Learning Implementation
-templates - HTML Files
+- .env - Contains GMaps API Key
+- Big_D.pkl - Machine Learning Files
+- pca_bigD.pkl - Machine Learning Files
+- app.py - Flask App Launcher
+- main.py - Main Functions
+- uiaitwo.py - Machine Learning Implementation
+- templates - HTML Files
 
 Trainer
 NNtik.py - Neural Network (V2 Trainer)
