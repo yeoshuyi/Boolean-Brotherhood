@@ -59,6 +59,7 @@ Libraries Used:
 Install dependencies:
 ```bash
 pip install -r requirements.txt
+```
 
 **License**
 Distributed under the Unlicense License. See LICENSE.txt for more information.
