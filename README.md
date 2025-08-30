@@ -3,4 +3,4 @@ TikTok Techjam 2025 Question 1 Submission
 
 Google Places API required in .env file
 
-Run webapp using app.py
+Run application using app.py
