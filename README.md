@@ -1,10 +1,17 @@
 # Boolean-Brotherhood
-TikTok Techjam 2025 Question 1 Submission
 
-Google Places API key required in .env file
+This project is the **Boolean Brotherhood’s** solution to TikTok TechJam 2025, Question 1.  
+It leverages machine learning and neural network models, combined with Google Maps API to analyze and classify reviews.  
 
-Run application using app.py
+**Setup**
+Boolean Brothers V1 and V2
+1) Enter GMaps API keys into .env file
+2) Run app.py
+3) Access application through http://127.0.0.1:5000/
 
+Trainer
+
+**Files**
 The repository contains three main components:  
 - **Boolean Brothers V2** — Neural network–based review analyzer (current version).  
 - **Boolean Brothers V1** — Machine learning–based review analyzer (earlier version).  
@@ -31,6 +38,7 @@ Trainer
 NNtik.py - Neural Network (V2 Trainer)
 spam.py - Machine Learning (V1 Trainer)
 
+**Dependencies**
 API Used:
 googlemaps
 
